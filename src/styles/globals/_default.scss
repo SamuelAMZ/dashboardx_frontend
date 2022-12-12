@@ -1,0 +1,24 @@
+//imports
+@import "./variables";
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "Noto Sans", sans-serif;
+}
+
+body {
+  max-width: 100vw;
+  min-height: 100vh;
+  background-color: $background !important;
+  overflow-x: hidden; /* fallback to clip */
+  overflow-x: clip;
+  scroll-behavior: smooth;
+  position: relative;
+}
+
+#root {
+  height: 100vh;
+  width: 100vw;
+}
