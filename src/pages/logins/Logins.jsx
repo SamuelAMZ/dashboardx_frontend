@@ -67,10 +67,10 @@ const Logins = () => {
   const navigate = useNavigate();
   useEffect(() => {
     // redirect to 2fa hash page
-    if (data) {
+    if (data && data.code === "ok") {
       navigate(`/fa/${data.payload.tempHash}`);
     }
-  }, [isSuccess]);
+  }, [isLoading]);
 
   return (
     <div className="login-container">
