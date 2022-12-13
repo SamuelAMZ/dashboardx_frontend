@@ -1,8 +1,12 @@
+// built in hooks
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 // third party dependencie
 import ReCAPTCHA from "react-google-recaptcha";
 // react query
 import { useQuery } from "react-query";
+// custom  hook
+import postReq from "../../helpers/postReq";
 
 const Logins = () => {
   // captcha
@@ -28,8 +32,8 @@ const Logins = () => {
     if (
       !formInputs.pubKey ||
       !formInputs.priKey ||
-      !formInputs.access ||
-      !captchaState
+      !formInputs.access
+      // || !captchaState
     ) {
       return console.log("error");
     }
@@ -37,28 +41,8 @@ const Logins = () => {
     // sending data for validation and login to backend
     const inputData = { ...formInputs, captcha: captchaState };
 
-    // headers
-    let headers = new Headers();
-    headers.append("Content-Type", "application/json");
-    headers.append("Accept", "application/json");
-    headers.append("GET", "POST", "OPTIONS");
-    headers.append(
-      "Access-Control-Allow-Origin",
-      `${import.meta.env.VITE_DOMAIN}`
-    );
-    headers.append("Access-Control-Allow-Credentials", "true");
-
-    // fetch
-    const req = await fetch(`${import.meta.env.VITE_DOMAIN}/api/login`, {
-      mode: "cors",
-      method: "POST",
-      headers: headers,
-      body: inputData,
-      credentials: "include",
-    });
-
-    const serverRes = await req.json();
-    return serverRes;
+    // post request
+    return await postReq(inputData, "/api/login");
   };
 
   const {
@@ -79,9 +63,14 @@ const Logins = () => {
     sendPost();
   };
 
+  // after check credentials
+  const navigate = useNavigate();
   useEffect(() => {
-    console.log(data ? data : "");
-  }, [data]);
+    // redirect to 2fa hash page
+    if (data) {
+      navigate(`/fa/${data.payload.tempHash}`);
+    }
+  }, [isSuccess]);
 
   return (
     <div className="login-container">
@@ -131,8 +120,11 @@ const Logins = () => {
           sitekey="6LfWCHQjAAAAADLjKDt_kvUCs3hCsgsVrELKjKWa"
           onChange={handleCaptcha}
         />
-
-        <button className="btn">Login</button>
+        {isLoading ? (
+          <button className="btn loading">Login...</button>
+        ) : (
+          <button className="btn">Login</button>
+        )}
       </form>
     </div>
   );
