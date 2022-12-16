@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 // helpers
 import getReq from "../../helpers/getReq";
@@ -9,6 +9,7 @@ import { useQuery } from "react-query";
 
 const Auth = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleCheck = async () => {
     // get request
@@ -22,8 +23,11 @@ const Auth = () => {
 
   useEffect(() => {
     if (data && data.code === "bad") {
-      navigate("/");
-      console.log("redirect");
+      // exclude the 2fa page
+      if (!location.pathname.includes("/fa/")) {
+        navigate("/");
+        console.log("redirect");
+      }
     }
   }, [isLoading]);
 

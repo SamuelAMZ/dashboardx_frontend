@@ -81,7 +81,8 @@ const TwoFa = () => {
   };
 
   useEffect(() => {
-    if (codeData && codeSuccess) {
+    console.log(codeData, codeData && codeData.code);
+    if (codeData && codeData.code === "ok") {
       navigate("/home");
     }
   }, [codeVerificationLoading]);
